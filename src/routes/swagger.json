@@ -1,0 +1,48 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Inventory Management API",
+    "description": "Inventory Management API with Node",
+    "version": "v0.1.0"
+  },
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/productInventory/{id}": {
+      "get": {
+        "summary": "Get product in inventory by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer",
+            "description": "Product_id to be fetched"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/productInventory/": {
+      "get": {
+        "summary": "Get all products",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    }
+  }
+}
