@@ -1,13 +1,64 @@
-const { ProductInventory } = require('../model');
+const { ProductInventory, sequelize } = require('../model');
+const { getGeneralInformation } = require('./general');
+const { createTransaction } = require('./transactions');
+const { TRANSACTION } = require('./constants');
 
-const getProductById = async ({ productId }) => ProductInventory.findOne({
+const getById = async ({ productId }) => ProductInventory.findOne({
   where: {
     id: productId,
   },
 });
 
-const getAllProducts = async () => ProductInventory.findAll();
+const createProduct = async ({ name }) => ProductInventory.create({
+  name,
+});
+
+const sellById = async ({ productId, amount, price }) => sequelize.transaction(async (t) => {
+  const product = await getById({ productId });
+  if (product.stock < amount) return `Not enough stock, only ${product.stock} ${product.name} left`;
+
+  const generalInformation = await getGeneralInformation();
+  generalInformation.balance += price * amount;
+  product.stock -= amount;
+
+  await product.save({ transaction: t });
+  await generalInformation.save({ transaction: t });
+
+  await createTransaction({
+    productId,
+    cost: price,
+    productAmount: amount,
+    type: TRANSACTION.TYPE.SELL,
+    t,
+  });
+
+  return product;
+});
+
+const buyById = async ({ productId, amount, price }) => sequelize.transaction(async (t) => {
+  const product = await getById({ productId });
+
+  const generalInformation = await getGeneralInformation();
+  const toPay = price * amount;
+  if (generalInformation.balance < toPay) return `Not enough balance, only can buy ${Math.floor(generalInformation.balance / price)} ${product.name}`;
+  generalInformation.balance -= toPay;
+  product.stock += amount;
+
+  await product.save({ transaction: t });
+  await generalInformation.save({ transaction: t });
+
+  await createTransaction({
+    productId,
+    cost: price,
+    productAmount: amount,
+    type: TRANSACTION.TYPE.RECEIVE,
+    t,
+  });
+
+  return product;
+});
+const getAll = async () => ProductInventory.findAll();
 
 module.exports = {
-  getProductById, getAllProducts,
+  buyById, getById, getAll, sellById, createProduct,
 };

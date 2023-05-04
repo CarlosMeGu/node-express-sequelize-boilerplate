@@ -55,9 +55,25 @@ Transaction.init({
   sequelize, modelName: 'Transaction',
 });
 
+class General extends Sequelize.Model {
+}
+
+General.init({
+  balance: {
+    type: Sequelize.NUMBER, default: 0,
+  },
+  createdAt: {
+    type: Sequelize.DATE, default: new Date(),
+  },
+  updatedAt: {
+    type: Sequelize.DATE, default: new Date(),
+  },
+}, {
+  sequelize, modelName: 'General',
+});
 ProductInventory.hasMany(Transaction, { foreignKey: 'productId' });
 Transaction.belongsTo(ProductInventory, { foreignKey: 'productId' });
 
 module.exports = {
-  sequelize, ProductInventory, Transaction,
+  sequelize, General, ProductInventory, Transaction,
 };

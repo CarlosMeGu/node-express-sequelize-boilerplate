@@ -1,9 +1,10 @@
-const { ProductInventory, Transaction } = require('../src/database/model');
+const { General, ProductInventory, Transaction } = require('../src/database/model');
 
 async function seed() {
   // create tables
   await ProductInventory.sync({ force: true });
   await Transaction.sync({ force: true });
+  await General.sync({ force: true });
 
   await Promise.all([
 
@@ -36,7 +37,7 @@ async function seed() {
       {
         productId: 1,
         cost: 3,
-        quantity: 13,
+        productAmount: 13,
         type: 'RECEIVE',
       },
     ),
@@ -44,7 +45,7 @@ async function seed() {
       {
         productId: 1,
         cost: 5,
-        quantity: 3,
+        productAmount: 3,
         type: 'SELL',
       },
     ),
@@ -52,7 +53,7 @@ async function seed() {
       {
         productId: 3,
         cost: 5,
-        quantity: 27,
+        productAmount: 27,
         type: 'RECEIVE',
       },
     ),
@@ -60,11 +61,15 @@ async function seed() {
       {
         productId: 3,
         cost: 10,
-        quantity: 12,
+        productAmount: 12,
         type: 'SELL',
       },
     ),
-
+    General.create(
+      {
+        balance: 100,
+      },
+    ),
   ]);
 }
 

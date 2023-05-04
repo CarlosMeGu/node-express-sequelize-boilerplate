@@ -1,7 +1,16 @@
 const { Transaction } = require('../model');
 
-const getAllTransactions = async () => Transaction.findAll();
+const getAll = async () => Transaction.findAll();
 
+const createTransaction = async ({
+  productId, cost, productAmount, type, t,
+}) => Transaction.create({
+  productId,
+  cost,
+  productAmount,
+  type,
+}, { transaction: t });
 module.exports = {
-  getAllTransactions,
+  getAll,
+  createTransaction,
 };
