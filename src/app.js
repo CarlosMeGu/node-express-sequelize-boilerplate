@@ -13,13 +13,13 @@ app.set('models', sequelize.models);
 
 app.use(router);
 
-app.use((error, req, res, next) => {
+app.use((error, req, res) => {
   if (error instanceof HttpError) {
     return res.status(error.code).json({
       error: error.message,
     });
   }
-  res.status(ERRORS.SERVER_ERROR.STATUS).json({
+  return res.status(ERRORS.SERVER_ERROR.STATUS).json({
     error: ERRORS.SERVER_ERROR.MESSAGE,
   });
 });

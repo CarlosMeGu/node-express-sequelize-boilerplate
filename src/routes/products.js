@@ -15,6 +15,7 @@ const getProductById = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
+  console.log('getAllProducts');
   const products = await getAll();
 
   if (!products) return res.status(RESPONSES.NOT_FOUND_ERR.STATUS).end();

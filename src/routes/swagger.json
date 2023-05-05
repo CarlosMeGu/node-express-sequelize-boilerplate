@@ -31,9 +31,22 @@
         }
       }
     },
-    "/productInventory/": {
+    "/productInventory": {
       "get": {
         "summary": "Get all products",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/productInventory/profit": {
+      "get": {
+        "summary": "Get all products with profit",
         "responses": {
           "200": {
             "description": "Ok"

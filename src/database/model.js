@@ -42,6 +42,9 @@ Transaction.init({
   cost: {
     type: Sequelize.NUMBER, default: 0,
   },
+  totalCost: {
+    type: Sequelize.NUMBER, default: 0,
+  },
   productAmount: {
     type: Sequelize.NUMBER, default: 0,
   },

@@ -1,4 +1,4 @@
-const { ProductInventory, sequelize } = require('../model');
+const { ProductInventory, sequelize, Transaction } = require('../model');
 const { getGeneralInformation } = require('./general');
 const { createTransaction } = require('./transactions');
 const { TRANSACTION } = require('./constants');
@@ -28,6 +28,7 @@ const sellById = async ({ productId, amount, price }) => sequelize.transaction(a
     productId,
     cost: price,
     productAmount: amount,
+    totalCost: price * amount,
     type: TRANSACTION.TYPE.SELL,
     t,
   });
@@ -51,14 +52,29 @@ const buyById = async ({ productId, amount, price }) => sequelize.transaction(as
     productId,
     cost: price,
     productAmount: amount,
+    totalCost: price * amount,
     type: TRANSACTION.TYPE.RECEIVE,
     t,
   });
 
   return product;
 });
+
+const getInventoryWithTransactions = async () => ProductInventory.findAll({
+  include: [{
+    attributes: [
+      'type',
+      [sequelize.fn('sum', sequelize.col('productAmount')), 'productAmount'],
+      [sequelize.fn('sum', sequelize.col('totalCost')), 'totalCost'],
+    ],
+    model: Transaction,
+  }],
+  order: [['id', 'ASC']],
+  group: ['Transactions.type', 'ProductInventory.id'],
+});
+
 const getAll = async () => ProductInventory.findAll();
 
 module.exports = {
-  buyById, getById, getAll, sellById, createProduct,
+  buyById, getById, getAll, sellById, createProduct, getInventoryWithTransactions,
 };

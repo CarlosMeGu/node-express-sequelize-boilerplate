@@ -4,7 +4,7 @@ const swaggerDocument = require('./swagger.json');
 const {
   getAllProducts, getProductById, sellProduct, buyProduct,
 } = require('./products');
-const { getTransactions } = require('./transactions');
+const { getTransactions, getBuyAndSellTransactions, getInventory } = require('./reports');
 
 const router = new Router();
 
@@ -13,8 +13,10 @@ router.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
 router.get('/productInventory/:id', getProductById);
 router.get('/productInventory', getAllProducts);
+router.get('/reports/profit', getInventory);
 router.put('/productInventory/sell', sellProduct);
 router.put('/productInventory/receive', buyProduct);
 router.get('/reports', getTransactions);
+router.get('/reports/buyAndSell', getBuyAndSellTransactions);
 
 module.exports = router;
